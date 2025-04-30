@@ -14,6 +14,12 @@ export const AppointmentForm = ({
   const doctors = getAllDoctors();
   const timeSlots = getTimeSlots();
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const filteredDoctors = doctors.filter(doctor =>
+    doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const [formData, setFormData] = useState({
     patientName: '',
     doctorId: doctors[0]?.id || '',
@@ -194,6 +200,17 @@ export const AppointmentForm = ({
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Search Doctor
+            </label>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by name or specialty"
+              className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Doctor
             </label>
             <select
@@ -204,7 +221,7 @@ export const AppointmentForm = ({
                 formErrors.doctorId ? 'border-red-500 dark:border-red-400' : 'border-gray-300'
               }`}
             >
-              {doctors.map(doctor => (
+              {filteredDoctors.map(doctor => (
                 <option key={doctor.id} value={doctor.id}>
                   {doctor.name} ({doctor.specialty})
                 </option>

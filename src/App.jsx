@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { AppointmentProvider } from './context/AppointmentContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Sidebar } from './components/Sidebar';
-// import { Header } from './components/Header';
+import { Header } from './components/Header';
 import { AppointmentsView } from './components/AppointmentsView';
-import { Header } from './components/Header.jsx';
+import { Overview } from './components/Overview';
+import { DoctorsList } from './components/DoctorsList';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('appointments');
+  const [activeTab, setActiveTab] = useState('overview');
 
   return (
     <ThemeProvider>
@@ -16,14 +17,16 @@ function App() {
           <div className="w-64 hidden md:block">
             <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
-
+          
           <div className="flex-1 flex flex-col overflow-hidden">
             <Header />
-
-            <main className="flex-1 overflow-y-auto p-4">
+            
+            <main className="flex-1 overflow-y-auto">
+              {activeTab === 'overview' && <Overview />}
               {activeTab === 'appointments' && <AppointmentsView viewMode="month" />}
-
-              {activeTab !== 'appointments' && (
+              {activeTab === 'doctors' && <DoctorsList />}
+              
+              {!['overview', 'appointments', 'doctors'].includes(activeTab) && (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
                     <h2 className="text-xl font-semibold mb-2 text-gray-700 dark:text-gray-300">
