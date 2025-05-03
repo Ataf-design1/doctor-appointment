@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { format, addMonths, subMonths } from 'date-fns';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
-import { getCalendarDays, getDayNames, getDateClasses, hasAppointments, formatDate } from '../utils/dateUtils';
+import {
+  getCalendarDays,
+  getDayNames,
+  getDateClasses,
+  hasAppointments,
+  formatDate,
+} from '../utils/dateUtils';
 import { useAppointments } from '../context/AppointmentContext';
 import { Button } from './ui/Button';
 
@@ -48,15 +54,18 @@ export const Calendar = ({ onDateClick, onAddClick }) => {
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {dayNames.map(day => (
-          <div key={day} className="text-center text-sm font-medium text-gray-600 dark:text-gray-400">
+        {dayNames.map((day) => (
+          <div
+            key={day}
+            className="text-center text-sm font-medium text-gray-600 dark:text-gray-400"
+          >
             {day}
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-7 gap-1">
-        {days.map(day => {
+        {days.map((day) => {
           const dateString = format(day, 'yyyy-MM-dd');
           const hasAppointmentsForDay = hasAppointments(day, appointments);
 
@@ -82,34 +91,40 @@ export const Calendar = ({ onDateClick, onAddClick }) => {
               </div>
 
               {hasAppointmentsForDay && (
-                <div
-                  className="mt-1 cursor-pointer"
-                  onClick={() => onDateClick(dateString)}
-                >
+                <div className="mt-1 cursor-pointer" onClick={() => onDateClick(dateString)}>
                   {appointments
-                    .filter(appt => appt.date === dateString)
+                    .filter((appt) => appt.date === dateString)
                     .slice(0, 2)
-                    .map(appt => (
-                      <div
-                        key={appt.id}
-                        className="text-xs p-1 mb-1 rounded truncate whitespace-nowrap overflow-hidden"
-                        style={{
-                          backgroundColor:
-                            appt.category === 'ROUTINE_CHECKUP' ? '#FEE2E2' :
-                            appt.category === 'SICK_VISIT' ? '#DBEAFE' :
-                            appt.category === 'CONSULTATION' ? '#FEF3C7' :
-                            appt.category === 'EMERGENCY' ? '#FEE2E2' :
-                            appt.category === 'EXAMINATION' ? '#F3E8FF' :
-                            '#F3F4F6'
-                        }}
-                      >
-                        {appt.startTime} {appt.patientName}
-                      </div>
-                    ))}
+                    .map((appt) => {
+                      const categoryStyles = {
+                        EMERGENCY: 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200',
+                        CONSULTATION:
+                          'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200',
+                        SICK_VISIT:
+                          'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-100',
+                        ROUTINE_CHECKUP:
+                          'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200',
+                        EXAMINATION:
+                          'bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200',
+                        DEFAULT: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white',
+                      };
 
-                  {appointments.filter(appt => appt.date === dateString).length > 2 && (
+                      const appliedStyle =
+                        categoryStyles[appt.category] || categoryStyles.DEFAULT;
+
+                      return (
+                        <div
+                          key={appt.id}
+                          className={`text-xs p-1 mb-1 rounded truncate whitespace-nowrap overflow-hidden ${appliedStyle}`}
+                        >
+                          {appt.startTime} {appt.patientName}
+                        </div>
+                      );
+                    })}
+
+                  {appointments.filter((appt) => appt.date === dateString).length > 2 && (
                     <div className="text-xs text-gray-500 dark:text-gray-400 p-1">
-                      +{appointments.filter(appt => appt.date === dateString).length - 2} more
+                      +{appointments.filter((appt) => appt.date === dateString).length - 2} more
                     </div>
                   )}
                 </div>
